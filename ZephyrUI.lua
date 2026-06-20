@@ -64,33 +64,38 @@ local function getContainer()
 end
 
 local T = {
-	BG          = Color3.fromRGB(15,  15,  20),
-	SURFACE     = Color3.fromRGB(22,  22,  30),
-	SURFACE2    = Color3.fromRGB(30,  30,  40),
-	SURFACE3    = Color3.fromRGB(40,  40,  54),
-	SIDEBAR     = Color3.fromRGB(18,  18,  25),
-	BORDER      = Color3.fromRGB(50,  50,  68),
-	BORDER2     = Color3.fromRGB(38,  38,  52),
+	BG          = Color3.fromRGB(23,  25,  32),
+	SURFACE     = Color3.fromRGB(30,  33,  41),
+	SURFACE2    = Color3.fromRGB(40,  44,  54),
+	SURFACE3    = Color3.fromRGB(52,  57,  69),
+	SIDEBAR     = Color3.fromRGB(26,  28,  36),
+	BORDER      = Color3.fromRGB(55,  60,  73),
+	BORDER2     = Color3.fromRGB(42,  46,  57),
 
-	ACCENT      = Color3.fromRGB(99,  102, 241),
-	ACCENT_H    = Color3.fromRGB(129, 132, 255),
-	ACCENT_DIM  = Color3.fromRGB(49,  51,  120),
+	GRAD_TOP    = Color3.fromRGB(34,  37,  46),
+	GRAD_BOT    = Color3.fromRGB(24,  26,  33),
+	CARD_TOP    = Color3.fromRGB(35,  39,  48),
+	CARD_BOT    = Color3.fromRGB(28,  31,  39),
 
-	TEXT        = Color3.fromRGB(230, 230, 240),
-	TEXT_SUB    = Color3.fromRGB(140, 140, 165),
-	TEXT_MUTED  = Color3.fromRGB(80,  80,  105),
+	ACCENT      = Color3.fromRGB(99,  169, 240),
+	ACCENT_H    = Color3.fromRGB(132, 191, 250),
+	ACCENT_DIM  = Color3.fromRGB(41,  72,  112),
 
-	SUCCESS     = Color3.fromRGB(52,  211, 153),
-	DANGER      = Color3.fromRGB(248, 113, 113),
-	WARN        = Color3.fromRGB(251, 191, 36),
-	INFO        = Color3.fromRGB(96,  165, 250),
+	TEXT        = Color3.fromRGB(233, 237, 243),
+	TEXT_SUB    = Color3.fromRGB(174, 183, 198),
+	TEXT_MUTED  = Color3.fromRGB(130, 140, 158),
 
-	RADIUS      = 10,
-	RADIUS_SM   = 7,
-	RADIUS_LG   = 18,
+	SUCCESS     = Color3.fromRGB(74,  201, 155),
+	DANGER      = Color3.fromRGB(238, 111, 111),
+	WARN        = Color3.fromRGB(240, 187, 89),
+	INFO        = Color3.fromRGB(99,  169, 240),
 
-	TWEEN_FAST  = TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-	TWEEN_MED   = TweenInfo.new(0.22, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+	RADIUS      = 12,
+	RADIUS_SM   = 9,
+	RADIUS_LG   = 14,
+
+	TWEEN_FAST  = TweenInfo.new(0.13, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+	TWEEN_MED   = TweenInfo.new(0.24, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
 	TWEEN_SLOW  = TweenInfo.new(0.40, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
 
 	FONT        = Enum.Font.GothamMedium,
@@ -99,6 +104,7 @@ local T = {
 }
 
 local ACCENT_PRESETS = {
+	Azure   = { Color3.fromRGB(99,169,240),  Color3.fromRGB(132,191,250), Color3.fromRGB(41,72,112) },
 	Indigo  = { Color3.fromRGB(99,102,241),  Color3.fromRGB(129,132,255), Color3.fromRGB(49,51,120) },
 	Emerald = { Color3.fromRGB(16,185,129),  Color3.fromRGB(52,211,153),  Color3.fromRGB(6,78,59)   },
 	Rose    = { Color3.fromRGB(244,63,94),   Color3.fromRGB(251,113,133), Color3.fromRGB(120,30,45) },
@@ -127,6 +133,14 @@ local function stroke(parent, color, thickness)
 	s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	s.Parent = parent
 	return s
+end
+
+local function gradient(parent, c1, c2, rot)
+	local g = Instance.new("UIGradient")
+	g.Color = ColorSequence.new(c1 or T.GRAD_TOP, c2 or T.GRAD_BOT)
+	g.Rotation = rot or 90
+	g.Parent = parent
+	return g
 end
 
 local function padding(parent, l, r, t, b)
@@ -1182,8 +1196,9 @@ function Section.new(parent, title, ctx)
 
 	local wrap = newFrame(parent, UDim2.new(1, 0, 0, 0), T.SURFACE)
 	wrap.AutomaticSize = Enum.AutomaticSize.Y
-	wrap.ClipsDescendants = true   
+	wrap.ClipsDescendants = true
 	corner(wrap, T.RADIUS); stroke(wrap, T.BORDER2, 1)
+	gradient(wrap, T.CARD_TOP, T.CARD_BOT, 90)
 
 	if title and title ~= "" then
 		local acBar = newFrame(wrap, UDim2.new(0, 3, 1, -8), T.ACCENT)
@@ -1287,6 +1302,7 @@ function Window.new(opts)
 	win.ZIndex = 2
 	corner(win, T.RADIUS_LG)
 	stroke(win, T.BORDER, 1)
+	gradient(win, T.GRAD_TOP, T.GRAD_BOT, 90)
 	self._win = win
 
 	win.BackgroundTransparency = 1
